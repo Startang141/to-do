@@ -1,3 +1,4 @@
+import ToDoList from "../src/list-todo";
 import Navbar from "../src/navbar";
 import Summary from "../src/summary";
 
@@ -7,6 +8,7 @@ export default function Home() {
       <main>
         <Navbar />
         <Summary />
+        <ToDoList />
       </main>
     </div>
   );
