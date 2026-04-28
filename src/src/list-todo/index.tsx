@@ -1,11 +1,27 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { Clipboard, Search } from "lucide-react";
 import ToDoTab from "./components/toDoTab";
 import { useState } from "react";
 import ModalAdd from "./components/modalAdd";
+import useToDo from "@/src/lib/useToDo";
 
 const ToDoList = () => {
+  const listToDo = useToDo();
+
+  const progressToDo = listToDo.filter((todo) => todo.status === "progress");
+  const notToDo = listToDo.filter((todo) => todo.status === "not");
+  const completToDo = listToDo.filter((todo) => todo.status === "completed");
+
+  const handleStatusChange = (id: string, newStatus: string) => {
+    const updateToDo = listToDo.map((todo) => {
+      if (todo.id === id) {
+        return { ...todo, status: newStatus };
+      }
+      return todo;
+    });
+  };
+
   const [showModal, setShowModal] = useState(false);
   const handleModal = () => {
     setShowModal(!showModal);
@@ -56,10 +72,27 @@ const ToDoList = () => {
               <div className="h-0.5 w-full bg-slate-200"></div>
             </div>
             <div className="flex flex-col gap-3">
-              <ToDoTab />
-              <ToDoTab />
-              <ToDoTab />
-              <ToDoTab />
+              {progressToDo.map((todo) => (
+                <ToDoTab
+                  key={todo.id}
+                  id={todo.id}
+                  title={
+                    todo.title.length > 10
+                      ? todo.title.slice(0, 12) + "..."
+                      : todo.title
+                  }
+                  date={todo.date}
+                  priority={todo.priority}
+                  status={todo.status}
+                  handleChangeStatus={handleStatusChange}
+                />
+              ))}
+              {progressToDo.length < 1 && (
+                <div className="text-slate-300 text-center font-semibold">
+                  <Clipboard className="mx-auto" />
+                  <p>Kosong</p>
+                </div>
+              )}
             </div>
           </div>
           <div>
@@ -68,10 +101,27 @@ const ToDoList = () => {
               <div className="h-0.5 w-full bg-slate-200"></div>
             </div>
             <div className="flex flex-col gap-3">
-              <ToDoTab />
-              <ToDoTab />
-              <ToDoTab />
-              <ToDoTab />
+              {completToDo.map((todo) => (
+                <ToDoTab
+                  key={todo.id}
+                  id={todo.id}
+                  title={
+                    todo.title.length > 10
+                      ? todo.title.slice(0, 12) + "..."
+                      : todo.title
+                  }
+                  date={todo.date}
+                  priority={todo.priority}
+                  status={todo.status}
+                  handleChangeStatus={handleStatusChange}
+                />
+              ))}
+              {completToDo.length < 1 && (
+                <div className="text-slate-300 text-center font-semibold">
+                  <Clipboard className="mx-auto" />
+                  <p>Kosong</p>
+                </div>
+              )}
             </div>
           </div>
           <div>
@@ -80,10 +130,27 @@ const ToDoList = () => {
               <div className="h-0.5 w-full bg-slate-200"></div>
             </div>
             <div className="flex flex-col gap-3">
-              <ToDoTab />
-              <ToDoTab />
-              <ToDoTab />
-              <ToDoTab />
+              {notToDo.map((todo) => (
+                <ToDoTab
+                  key={todo.id}
+                  id={todo.id}
+                  title={
+                    todo.title.length > 10
+                      ? todo.title.slice(0, 12) + "..."
+                      : todo.title
+                  }
+                  date={todo.date}
+                  priority={todo.priority}
+                  status={todo.status}
+                  handleChangeStatus={handleStatusChange}
+                />
+              ))}
+              {notToDo.length < 1 && (
+                <div className="text-slate-300 text-center font-semibold">
+                  <Clipboard className="mx-auto" />
+                  <p>Kosong</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
