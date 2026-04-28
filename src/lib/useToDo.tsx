@@ -1,3 +1,4 @@
+"use client";
 interface useToDo {
   id: string;
   title: string;
@@ -8,7 +9,7 @@ interface useToDo {
 }
 
 function useToDo(): useToDo[] {
-  const fetchToDo = localStorage.getItem("ListToDo");
+  const fetchToDo = global?.window?.localStorage?.getItem("ListToDo");
   const ListToDo = JSON.parse(fetchToDo || "[]");
   return ListToDo;
 }

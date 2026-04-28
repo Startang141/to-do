@@ -1,3 +1,5 @@
+"use client";
+
 import {
   CircleCheckBig,
   ClipboardCheck,
@@ -5,15 +7,37 @@ import {
   LoaderCircle,
 } from "lucide-react";
 import TabSummary from "./components/tabSummary";
+import useToDo from "@/src/lib/useToDo";
+import { useEffect, useEffectEvent } from "react";
 
 const Summary = () => {
+  const listToDo = useToDo();
+  const notStarted = listToDo.filter((todo) => todo.status == "not");
+  const progress = listToDo.filter((todo) => todo.status == "progress");
+  const complete = listToDo.filter((todo) => todo.status == "completed");
   return (
     <>
       <div className="px-2 flex flex-col md:flex-row gap-2 md:gap-4  mt-4 container mx-auto">
-        <TabSummary title="Not Started" count={2} icon={ClipboardList} />
-        <TabSummary title="Progress Task" count={2} icon={LoaderCircle} />
-        <TabSummary title="Complete Task" count={8} icon={CircleCheckBig} />
-        <TabSummary title="Total Task" count={10} icon={ClipboardCheck} />
+        <TabSummary
+          title="Not Started"
+          count={notStarted.length}
+          icon={ClipboardList}
+        />
+        <TabSummary
+          title="Progress Task"
+          count={progress.length}
+          icon={LoaderCircle}
+        />
+        <TabSummary
+          title="Complete Task"
+          count={complete.length}
+          icon={CircleCheckBig}
+        />
+        <TabSummary
+          title="Total Task"
+          count={notStarted.length + progress.length + complete.length}
+          icon={ClipboardCheck}
+        />
       </div>
     </>
   );
