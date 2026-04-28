@@ -31,21 +31,21 @@ const ToDoList = () => {
             <div className="flex flex-row gap-2 md:w-96">
               <button
                 onClick={() => handleModal()}
-                className="bg-green-700 px-4 py-2 text-white rounded-md flex-1 hover:bg-green-900"
+                className="bg-green-700 font-semibold px-4 py-2 text-white rounded-md flex-1 hover:bg-green-900 cursor-pointer"
               >
                 + Add Task
               </button>
               <select
                 name=""
                 id=""
-                className="text-green-700 border-green-700 border bg-green-100 px-4 py-2 rounded-md text-md flex-1 focus:border-green-700 focus:outline focus:outline-green-700"
+                className="text-slate-500 font-medium border-slate-700 border px-4 py-2 rounded-md text-md flex-1 focus:border-slate-700 focus:outline focus:outline-slate-700 cursor-pointer"
               >
                 <option value="">All</option>
                 <option value="">Low</option>
                 <option value="">Medium</option>
                 <option value="">High</option>
               </select>
-              <button className="bg-red-700 hover:bg-red-900 px-4 py-2 text-white rounded-md flex-1">
+              <button className="bg-red-700 font-semibold  hover:bg-red-900 px-4 py-2 text-white rounded-md flex-1 cursor-pointer">
                 Delete All
               </button>
             </div>

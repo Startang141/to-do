@@ -1,27 +1,70 @@
 "useClient";
 
 import { X } from "lucide-react";
-import { FC } from "react";
+import { FC, useDebugValue, useState } from "react";
+import { toast } from "sonner";
 
 interface ModalAddProps {
   handleCloseModal: () => void;
 }
 
 const ModalAdd: FC<ModalAddProps> = ({ handleCloseModal }) => {
+  const [title, setTitle] = useState("");
+  const [detail, setDetail] = useState("");
+  const [date, setDate] = useState("");
+  const [priority, setPriority] = useState("");
+  const [status, setStatus] = useState("");
+
+  const alertSuccess = () => {
+    toast.success("Berhasil Ditambahkan");
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const listToDo = JSON.parse(localStorage.getItem("ListToDo") || "[]");
+
+    const addToDo = {
+      id: new Date(),
+      title: title,
+      detail: detail,
+      date: date,
+      priority: priority,
+      status: status,
+    };
+
+    listToDo.push(addToDo);
+
+    localStorage.setItem("ListToDo", JSON.stringify(listToDo));
+
+    setTitle("");
+    setDetail("");
+    setDate("");
+    setPriority("");
+    setStatus("");
+
+    handleCloseModal();
+
+    alertSuccess();
+  };
   return (
     <>
       <div>
         <div className="bg-white border border-slate-200 rounded-md p-4 w-3/4 md:w-1/4 mx-auto mt-16">
           <div className="flex flex-row justify-between items-center mb-4">
             <h2 className="font-bold text-2xl">Create Task</h2>
-            <button onClick={handleCloseModal}>
+            <button onClick={handleCloseModal} className="cursor-pointer">
               <X className="text-slate-400" />
             </button>
           </div>
-          <form action="" method="post" className="flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col">
-              <label htmlFor="">Task</label>
+              <label htmlFor="title">Title Task</label>
               <input
+                required
+                name="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 type="text"
                 className="border py-2 px-2 border-slate-200 focus:outline-green-700 rounded-md"
                 placeholder="Title..."
@@ -30,15 +73,21 @@ const ModalAdd: FC<ModalAddProps> = ({ handleCloseModal }) => {
             <div className="flex flex-col">
               <label htmlFor="">Detail</label>
               <textarea
-                name=""
-                id=""
+                required
+                name="detail"
+                value={detail}
+                onChange={(e) => setDetail(e.target.value)}
                 className="border py-2 px-2 border-slate-200 focus:outline-green-700 rounded-md"
                 placeholder="Detail Task.."
               ></textarea>
             </div>
             <div className="flex flex-col">
-              <label htmlFor="">Task</label>
+              <label htmlFor="date">Date</label>
               <input
+                required
+                name="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
                 type="date"
                 className="border py-2 px-2 border-slate-200 focus:outline-green-700 rounded-md"
                 placeholder="Title..."
@@ -50,8 +99,10 @@ const ModalAdd: FC<ModalAddProps> = ({ handleCloseModal }) => {
                   Priority
                 </label>
                 <select
-                  name=""
-                  id=""
+                  required
+                  value={priority}
+                  onChange={(e) => setPriority(e.target.value)}
+                  name="priority"
                   className="border py-2 px-2 border-slate-200 w-full focus:outline-green-700 rounded-md"
                 >
                   <option value="all" disabled>
@@ -63,17 +114,18 @@ const ModalAdd: FC<ModalAddProps> = ({ handleCloseModal }) => {
                 </select>
               </div>
               <div className="flex-1">
-                <label htmlFor="" className="block">
+                <label htmlFor="status" className="block">
                   Status
                 </label>
                 <select
-                  name=""
-                  id=""
+                  required
+                  name="status"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
                   className="border py-2 px-2 w-full border-slate-200 focus:outline-green-700 rounded-md"
                 >
                   <option value="not">Not Started</option>
                   <option value="progress">Progress</option>
-                  <option value="complete">Completed</option>
                 </select>
               </div>
             </div>
