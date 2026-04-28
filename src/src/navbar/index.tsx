@@ -1,3 +1,5 @@
+"use client";
+
 import LogoNavbar from "./components/logoNavbar";
 import NavItem from "./components/navItem";
 

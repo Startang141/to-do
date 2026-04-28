@@ -8,6 +8,7 @@ interface toDoProps {
   priority: string;
   status: string;
   handleChangeStatus: (id: string, status: string) => void;
+  handleDelete: (id: string) => void;
 }
 
 const ToDoTab: FC<toDoProps> = ({
@@ -17,7 +18,12 @@ const ToDoTab: FC<toDoProps> = ({
   priority,
   status,
   handleChangeStatus,
+  handleDelete,
 }) => {
+  const handleCheckBoxChange = () => {
+    const newStatus = status === "completed" ? "progress" : "completed";
+    handleChangeStatus(id, newStatus);
+  };
   return (
     <>
       <div className="border border-slate-200 p-2 rounded-md">
@@ -26,14 +32,14 @@ const ToDoTab: FC<toDoProps> = ({
             <input
               type="checkbox"
               className="accent-green-700"
-              onChange={(e) => {
-                const newStatus = e.target.checked ? "Completed" : "Progress";
-                handleChangeStatus(id, newStatus);
-              }}
+              checked={status == "completed"}
+              onChange={handleCheckBoxChange}
             />
             <div>
               <h3
-                className={`${status === "completed" ? "line-through" : ""}text-xl font-semibold`}
+                className={`${
+                  status === "completed" ? "line-through" : ""
+                } text-xl font-semibold`}
               >
                 {title}
               </h3>
@@ -60,11 +66,19 @@ const ToDoTab: FC<toDoProps> = ({
               </div>
             )}
             <div className="flex gap-2 flex-row justify-end">
-              <div className="bg-blue-100 p-1 rounded-md inline-block">
-                <Pen className="text-blue-700 p-1" />
-              </div>
+              {/* <div className="bg-blue-100 p-1 rounded-md inline-block">
+                <button>
+                  <Pen className="text-blue-700 p-1" />
+                </button>
+              </div> */}
               <div className="bg-red-100 p-1 rounded-md inline-block">
-                <Trash className="text-red-700 p-1" />
+                <button
+                  onClick={() => {
+                    handleDelete(id);
+                  }}
+                >
+                  <Trash className="text-red-700 p-1" />
+                </button>
               </div>
             </div>
           </div>

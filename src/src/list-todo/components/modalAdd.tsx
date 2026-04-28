@@ -5,18 +5,26 @@ import { X } from "lucide-react";
 import { FC, useState } from "react";
 import { toast } from "sonner";
 
-interface ModalAddProps {
-  handleCloseModal: () => void;
+interface useToDoType {
+  id: string;
+  title: string;
+  detail: string;
+  date: string;
+  priority: string;
+  status: string;
 }
 
-const ModalAdd: FC<ModalAddProps> = ({ handleCloseModal }) => {
+interface ModalAddProps {
+  handleCloseModal: () => void;
+  handleAddToDo: (add: useToDoType) => void;
+}
+
+const ModalAdd: FC<ModalAddProps> = ({ handleCloseModal, handleAddToDo }) => {
   const [title, setTitle] = useState("");
   const [detail, setDetail] = useState("");
   const [date, setDate] = useState("");
   const [priority, setPriority] = useState("low");
   const [status, setStatus] = useState("not");
-
-  const listToDo = useToDo();
 
   const alertSuccess = () => {
     toast.success("Berhasil Ditambahkan");
@@ -26,7 +34,7 @@ const ModalAdd: FC<ModalAddProps> = ({ handleCloseModal }) => {
     e.preventDefault();
 
     const addToDo = {
-      id: new Date(),
+      id: new Date().toISOString(),
       title: title,
       detail: detail,
       date: date,
@@ -34,20 +42,19 @@ const ModalAdd: FC<ModalAddProps> = ({ handleCloseModal }) => {
       status: status,
     };
 
-    const ListaddToDo = [...listToDo, addToDo];
-
-    localStorage.setItem("ListToDo", JSON.stringify(ListaddToDo));
+    handleAddToDo(addToDo);
 
     setTitle("");
     setDetail("");
     setDate("");
-    setPriority("");
-    setStatus("");
+    setPriority("low");
+    setStatus("not");
 
     handleCloseModal();
 
     alertSuccess();
   };
+
   return (
     <>
       <div>
@@ -106,7 +113,7 @@ const ModalAdd: FC<ModalAddProps> = ({ handleCloseModal }) => {
                   name="priority"
                   className="border py-2 px-2 border-slate-200 w-full focus:outline-green-700 rounded-md"
                 >
-                  <option value="all" disabled>
+                  <option value="#" disabled>
                     Choose Priority
                   </option>
                   <option value="low">Low</option>
@@ -125,8 +132,12 @@ const ModalAdd: FC<ModalAddProps> = ({ handleCloseModal }) => {
                   onChange={(e) => setStatus(e.target.value)}
                   className="border py-2 px-2 w-full border-slate-200 focus:outline-green-700 rounded-md"
                 >
+                  <option value="#" disabled>
+                    Choose Status
+                  </option>
                   <option value="not">Not Started</option>
                   <option value="progress">Progress</option>
+                  <option value="completed">Completed</option>
                 </select>
               </div>
             </div>
