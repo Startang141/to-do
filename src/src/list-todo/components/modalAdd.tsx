@@ -1,7 +1,8 @@
 "useClient";
 
+import useToDo from "@/src/lib/useToDo";
 import { X } from "lucide-react";
-import { FC, useDebugValue, useState } from "react";
+import { FC, useState } from "react";
 import { toast } from "sonner";
 
 interface ModalAddProps {
@@ -12,8 +13,10 @@ const ModalAdd: FC<ModalAddProps> = ({ handleCloseModal }) => {
   const [title, setTitle] = useState("");
   const [detail, setDetail] = useState("");
   const [date, setDate] = useState("");
-  const [priority, setPriority] = useState("");
-  const [status, setStatus] = useState("");
+  const [priority, setPriority] = useState("low");
+  const [status, setStatus] = useState("not");
+
+  const listToDo = useToDo();
 
   const alertSuccess = () => {
     toast.success("Berhasil Ditambahkan");
@@ -21,8 +24,6 @@ const ModalAdd: FC<ModalAddProps> = ({ handleCloseModal }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const listToDo = JSON.parse(localStorage.getItem("ListToDo") || "[]");
 
     const addToDo = {
       id: new Date(),
@@ -33,9 +34,9 @@ const ModalAdd: FC<ModalAddProps> = ({ handleCloseModal }) => {
       status: status,
     };
 
-    listToDo.push(addToDo);
+    const ListaddToDo = [...listToDo, addToDo];
 
-    localStorage.setItem("ListToDo", JSON.stringify(listToDo));
+    localStorage.setItem("ListToDo", JSON.stringify(ListaddToDo));
 
     setTitle("");
     setDetail("");
