@@ -1,11 +1,27 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { Clipboard, Search } from "lucide-react";
 import ToDoTab from "./components/toDoTab";
 import { useState } from "react";
 import ModalAdd from "./components/modalAdd";
+import useToDo from "@/src/lib/useToDo";
 
 const ToDoList = () => {
+  const listToDo = useToDo();
+
+  const progressToDo = listToDo.filter((todo) => todo.status === "progress");
+  const notToDo = listToDo.filter((todo) => todo.status === "not");
+  const completToDo = listToDo.filter((todo) => todo.status === "completed");
+
+  const handleStatusChange = (id: string, newStatus: string) => {
+    const updateToDo = listToDo.map((todo) => {
+      if (todo.id === id) {
+        return { ...todo, status: newStatus };
+      }
+      return todo;
+    });
+  };
+
   const [showModal, setShowModal] = useState(false);
   const handleModal = () => {
     setShowModal(!showModal);
@@ -31,21 +47,21 @@ const ToDoList = () => {
             <div className="flex flex-row gap-2 md:w-96">
               <button
                 onClick={() => handleModal()}
-                className="bg-green-700 px-4 py-2 text-white rounded-md flex-1 hover:bg-green-900"
+                className="bg-green-700 font-semibold px-4 py-2 text-white rounded-md flex-1 hover:bg-green-900 cursor-pointer"
               >
                 + Add Task
               </button>
               <select
                 name=""
                 id=""
-                className="text-green-700 border-green-700 border bg-green-100 px-4 py-2 rounded-md text-md flex-1 focus:border-green-700 focus:outline focus:outline-green-700"
+                className="text-slate-500 font-medium border-slate-700 border px-4 py-2 rounded-md text-md flex-1 focus:border-slate-700 focus:outline focus:outline-slate-700 cursor-pointer"
               >
                 <option value="">All</option>
                 <option value="">Low</option>
                 <option value="">Medium</option>
                 <option value="">High</option>
               </select>
-              <button className="bg-red-700 hover:bg-red-900 px-4 py-2 text-white rounded-md flex-1">
+              <button className="bg-red-700 font-semibold  hover:bg-red-900 px-4 py-2 text-white rounded-md flex-1 cursor-pointer">
                 Delete All
               </button>
             </div>
@@ -56,10 +72,27 @@ const ToDoList = () => {
               <div className="h-0.5 w-full bg-slate-200"></div>
             </div>
             <div className="flex flex-col gap-3">
-              <ToDoTab />
-              <ToDoTab />
-              <ToDoTab />
-              <ToDoTab />
+              {progressToDo.map((todo) => (
+                <ToDoTab
+                  key={todo.id}
+                  id={todo.id}
+                  title={
+                    todo.title.length > 10
+                      ? todo.title.slice(0, 12) + "..."
+                      : todo.title
+                  }
+                  date={todo.date}
+                  priority={todo.priority}
+                  status={todo.status}
+                  handleChangeStatus={handleStatusChange}
+                />
+              ))}
+              {progressToDo.length < 1 && (
+                <div className="text-slate-300 text-center font-semibold">
+                  <Clipboard className="mx-auto" />
+                  <p>Kosong</p>
+                </div>
+              )}
             </div>
           </div>
           <div>
@@ -68,10 +101,27 @@ const ToDoList = () => {
               <div className="h-0.5 w-full bg-slate-200"></div>
             </div>
             <div className="flex flex-col gap-3">
-              <ToDoTab />
-              <ToDoTab />
-              <ToDoTab />
-              <ToDoTab />
+              {completToDo.map((todo) => (
+                <ToDoTab
+                  key={todo.id}
+                  id={todo.id}
+                  title={
+                    todo.title.length > 10
+                      ? todo.title.slice(0, 12) + "..."
+                      : todo.title
+                  }
+                  date={todo.date}
+                  priority={todo.priority}
+                  status={todo.status}
+                  handleChangeStatus={handleStatusChange}
+                />
+              ))}
+              {completToDo.length < 1 && (
+                <div className="text-slate-300 text-center font-semibold">
+                  <Clipboard className="mx-auto" />
+                  <p>Kosong</p>
+                </div>
+              )}
             </div>
           </div>
           <div>
@@ -80,10 +130,27 @@ const ToDoList = () => {
               <div className="h-0.5 w-full bg-slate-200"></div>
             </div>
             <div className="flex flex-col gap-3">
-              <ToDoTab />
-              <ToDoTab />
-              <ToDoTab />
-              <ToDoTab />
+              {notToDo.map((todo) => (
+                <ToDoTab
+                  key={todo.id}
+                  id={todo.id}
+                  title={
+                    todo.title.length > 10
+                      ? todo.title.slice(0, 12) + "..."
+                      : todo.title
+                  }
+                  date={todo.date}
+                  priority={todo.priority}
+                  status={todo.status}
+                  handleChangeStatus={handleStatusChange}
+                />
+              ))}
+              {notToDo.length < 1 && (
+                <div className="text-slate-300 text-center font-semibold">
+                  <Clipboard className="mx-auto" />
+                  <p>Kosong</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
