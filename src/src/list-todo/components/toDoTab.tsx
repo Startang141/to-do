@@ -1,4 +1,4 @@
-import { Calendar, Pen, Trash } from "lucide-react";
+import { Calendar, Eye, Trash, UserCircle } from "lucide-react";
 import { FC } from "react";
 
 interface toDoProps {
@@ -7,8 +7,11 @@ interface toDoProps {
   date: string;
   priority: string;
   status: string;
+  name: string;
+  position: string;
   handleChangeStatus: (id: string, status: string) => void;
   handleDelete: (id: string) => void;
+  handleOpenDetail: () => void;
 }
 
 const ToDoTab: FC<toDoProps> = ({
@@ -17,8 +20,11 @@ const ToDoTab: FC<toDoProps> = ({
   date,
   priority,
   status,
+  name,
+  position,
   handleChangeStatus,
   handleDelete,
+  handleOpenDetail,
 }) => {
   const handleCheckBoxChange = () => {
     const newStatus = status === "completed" ? "progress" : "completed";
@@ -36,47 +42,53 @@ const ToDoTab: FC<toDoProps> = ({
               onChange={handleCheckBoxChange}
             />
             <div>
-              <h3
-                className={`${
-                  status === "completed" ? "line-through" : ""
-                } text-xl font-semibold`}
-              >
-                {title}
-              </h3>
+              <div className="flex flex-row gap-2">
+                <h3
+                  className={`${
+                    status === "completed" ? "line-through" : ""
+                  } text-xl font-semibold`}
+                >
+                  {title}
+                </h3>
+                <div>
+                  {priority === "low" && (
+                    <div className="bg-emerald-100 text-emerald-700 inline-block text-xs px-3 py-1 rounded-sm font-semibold">
+                      {priority}
+                    </div>
+                  )}
+                  {priority === "medium" && (
+                    <div className="bg-yellow-100 text-yellow-700 inline-block text-xs px-3 py-1 rounded-sm font-semibold">
+                      {priority}
+                    </div>
+                  )}
+                  {priority === "high" && (
+                    <div className="bg-red-100 text-red-700 inline-block text-xs px-3 py-1 rounded-sm font-semibold">
+                      {priority}
+                    </div>
+                  )}
+                </div>
+              </div>
               <div className="flex items-center gap-2 text-slate-500">
-                <Calendar className="" width={16} />
-                <p className="text-sm">{date}</p>
+                <UserCircle className="" width={16} />
+                <p className="text-sm">
+                  {name} | {position}
+                </p>
               </div>
             </div>
           </div>
+          <div className="flex items-center gap-2 text-slate-500">
+            <Calendar className="" width={16} />
+            <p className="text-sm">{date}</p>
+          </div>
           <div className="flex flex-row gap-1 items-center md:gap-8">
-            {priority === "low" && (
-              <div className="bg-emerald-100 text-emerald-700 inline-block text-xs px-3 py-1 rounded-sm font-semibold">
-                {priority}
-              </div>
-            )}
-            {priority === "medium" && (
-              <div className="bg-yellow-100 text-yellow-700 inline-block text-xs px-3 py-1 rounded-sm font-semibold">
-                {priority}
-              </div>
-            )}
-            {priority === "high" && (
-              <div className="bg-red-100 text-red-700 inline-block text-xs px-3 py-1 rounded-sm font-semibold">
-                {priority}
-              </div>
-            )}
             <div className="flex gap-2 flex-row justify-end">
-              {/* <div className="bg-blue-100 p-1 rounded-md inline-block">
-                <button>
-                  <Pen className="text-blue-700 p-1" />
+              <div className="bg-blue-100 p-1  rounded-md inline-flex flex-col justify-center cursor-pointer">
+                <button onClick={handleOpenDetail}>
+                  <Eye className="text-blue-700 p-1" />
                 </button>
-              </div> */}
-              <div className="bg-red-100 p-1 rounded-md inline-block">
-                <button
-                  onClick={() => {
-                    handleDelete(id);
-                  }}
-                >
+              </div>
+              <div className="bg-red-100 p-1 rounded-md inline-flex flex-col justify-center cursor-pointer">
+                <button onClick={() => handleDelete(id)}>
                   <Trash className="text-red-700 p-1" />
                 </button>
               </div>

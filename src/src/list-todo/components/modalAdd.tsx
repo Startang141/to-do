@@ -1,6 +1,6 @@
 "useClient";
 
-import useToDo from "@/src/lib/useToDo";
+import { useAuth } from "@/src/context/AuthContext";
 import { X } from "lucide-react";
 import { FC, useState } from "react";
 import { toast } from "sonner";
@@ -12,6 +12,8 @@ interface useToDoType {
   date: string;
   priority: string;
   status: string;
+  name: string;
+  position: string;
 }
 
 interface ModalAddProps {
@@ -20,6 +22,7 @@ interface ModalAddProps {
 }
 
 const ModalAdd: FC<ModalAddProps> = ({ handleCloseModal, handleAddToDo }) => {
+  const { user } = useAuth();
   const [title, setTitle] = useState("");
   const [detail, setDetail] = useState("");
   const [date, setDate] = useState("");
@@ -40,6 +43,8 @@ const ModalAdd: FC<ModalAddProps> = ({ handleCloseModal, handleAddToDo }) => {
       date: date,
       priority: priority,
       status: status,
+      name: user?.name ?? "Guest",
+      position: user?.position ?? "Impostor",
     };
 
     handleAddToDo(addToDo);

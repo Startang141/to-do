@@ -1,24 +1,28 @@
 "use client";
 
-import { Clipboard, Search } from "lucide-react";
+import { Clipboard } from "lucide-react";
 import ToDoTab from "./components/toDoTab";
 import { useState } from "react";
 import ModalAdd from "./components/modalAdd";
-import useToDo from "@/src/lib/useToDo";
-import { toast } from "sonner";
+import { useToDoContext } from "@/src/context/ToDoContext";
+import ModalDetail from "./components/modalDetail";
 
-interface useToDoType {
+interface ToDoTypes {
   id: string;
   title: string;
   detail: string;
   date: string;
   priority: string;
   status: string;
+  name: string;
+  position: string;
 }
 
 const ToDoList = () => {
-  const [listToDo, setListToDo] = useState(useToDo());
+  const { listToDo, addToDo, deleteToDo, deleteAllToDo, changeStatus } =
+    useToDoContext();
   const [status, setStatus] = useState("all");
+
   const filteredToDo =
     status === "all"
       ? listToDo
@@ -34,71 +38,20 @@ const ToDoList = () => {
     (todo) => todo.status === "completed"
   );
 
-  const handleDeleteAll = () => {
-    if (listToDo.length > 0) {
-      localStorage.removeItem("ListToDo");
-      setListToDo([]);
-      toast.success("Berhasil Dihapus");
-    } else {
-      toast.error("Tidak Ada Data");
-    }
-  };
-
-  const handleAddToDo = (newToDo: useToDoType) => {
-    const updatedList = [...listToDo, newToDo];
-    setListToDo(updatedList);
-    localStorage.setItem("ListToDo", JSON.stringify(updatedList));
-  };
-
-  const handleDeleteToDo = (id: string) => {
-    const exceptToDo = listToDo.filter((todo) => todo.id !== id);
-    setListToDo(exceptToDo);
-
-    localStorage.setItem("ListToDo", JSON.stringify(exceptToDo));
-
-    toast.success("Berhasil Dihapus");
-  };
-
-  const handleUpdateChange = (
-    id: string,
-    newTitle: string,
-    newDetail: string,
-    newDate: string,
-    newPriority: string,
-    newStatus: string
-  ) => {
-    const updateToDo = listToDo.map((todo) => {
-      if (todo.id === id) {
-        return {
-          ...todo,
-          title: newTitle,
-          detail: newDetail,
-          date: newDate,
-          priority: newPriority,
-          status: newStatus,
-        };
-      }
-      return todo;
-    });
-    setListToDo(updateToDo);
-    localStorage.setItem("ListToDo", JSON.stringify(updateToDo));
-  };
-
-  const handleStatusChange = (id: string, newStatus: string) => {
-    console.log(newStatus);
-    const updateToDo = listToDo.map((todo) => {
-      if (todo.id === id) {
-        return { ...todo, status: newStatus };
-      }
-      return todo;
-    });
-
-    setListToDo(updateToDo);
-
-    localStorage.setItem("ListToDo", JSON.stringify(updateToDo));
-  };
-
+  const [selectedToDo, setSelectedToDo] = useState<ToDoTypes | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+
+  const handleOpenDetail = (todo: ToDoTypes) => {
+    setSelectedToDo(todo);
+    setShowDetailModal(true);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedToDo(null);
+    setShowDetailModal(false);
+  };
+
   const handleModal = () => {
     setShowModal(!showModal);
   };
@@ -112,14 +65,6 @@ const ToDoList = () => {
       <div className="container mx-auto px-2 mt-4">
         <div className="border border-slate-200 rounded-md p-2">
           <div className="flex flex-col md:flex-row md:justify-between gap-2">
-            {/* <div className="flex items-center gap-2 border border-slate-200 py-2 px-2 rounded-md focus-within:outline focus-within:border-green-700 focus-within:outline-green-700">
-              <Search width={18} className="" />
-              <input
-                type="text"
-                placeholder="cari task"
-                className="placeholder:text-slate-300 w-full focus:outline-none rounded-md"
-              />
-            </div> */}
             <div className="flex flex-row gap-2 md:w-96">
               <button
                 onClick={() => handleModal()}
@@ -139,7 +84,7 @@ const ToDoList = () => {
                 <option value="high">High</option>
               </select>
               <button
-                onClick={() => handleDeleteAll()}
+                onClick={deleteAllToDo}
                 className="bg-red-700 font-semibold  hover:bg-red-900 px-4 py-2 text-white rounded-md flex-1 cursor-pointer"
               >
                 Delete All
@@ -157,15 +102,18 @@ const ToDoList = () => {
                   key={todo.id}
                   id={todo.id}
                   title={
-                    todo.title.length > 10
-                      ? todo.title.slice(0, 12) + "..."
+                    todo.title.length > 5
+                      ? todo.title.slice(0, 6) + "..."
                       : todo.title
                   }
                   date={todo.date}
                   priority={todo.priority}
                   status={todo.status}
-                  handleChangeStatus={handleStatusChange}
-                  handleDelete={handleDeleteToDo}
+                  name={todo.name}
+                  position={todo.position}
+                  handleChangeStatus={changeStatus}
+                  handleDelete={deleteToDo}
+                  handleOpenDetail={() => handleOpenDetail(todo)}
                 />
               ))}
               {progressToDo.length < 1 && (
@@ -187,15 +135,18 @@ const ToDoList = () => {
                   key={todo.id}
                   id={todo.id}
                   title={
-                    todo.title.length > 10
-                      ? todo.title.slice(0, 12) + "..."
+                    todo.title.length > 5
+                      ? todo.title.slice(0, 6) + "..."
                       : todo.title
                   }
                   date={todo.date}
                   priority={todo.priority}
                   status={todo.status}
-                  handleChangeStatus={handleStatusChange}
-                  handleDelete={handleDeleteToDo}
+                  name={todo.name}
+                  position={todo.position}
+                  handleChangeStatus={changeStatus}
+                  handleDelete={deleteToDo}
+                  handleOpenDetail={() => handleOpenDetail(todo)}
                 />
               ))}
               {completToDo.length < 1 && (
@@ -217,15 +168,18 @@ const ToDoList = () => {
                   key={todo.id}
                   id={todo.id}
                   title={
-                    todo.title.length > 10
-                      ? todo.title.slice(0, 12) + "..."
+                    todo.title.length > 5
+                      ? todo.title.slice(0, 6) + "..."
                       : todo.title
                   }
                   date={todo.date}
                   priority={todo.priority}
                   status={todo.status}
-                  handleChangeStatus={handleStatusChange}
-                  handleDelete={handleDeleteToDo}
+                  name={todo.name}
+                  position={todo.position}
+                  handleChangeStatus={changeStatus}
+                  handleDelete={deleteToDo}
+                  handleOpenDetail={() => handleOpenDetail(todo)}
                 />
               ))}
               {notToDo.length < 1 && (
@@ -244,11 +198,16 @@ const ToDoList = () => {
           showModal ? "fixed" : "hidden"
         } "z-50 top-0 right-0 left-0 h-screen bg-slate-800/50 items-center`}
       >
-        <ModalAdd
-          handleCloseModal={handleCloseModal}
-          handleAddToDo={handleAddToDo}
-        />
+        <ModalAdd handleCloseModal={handleCloseModal} handleAddToDo={addToDo} />
       </div>
+      {showDetailModal && selectedToDo && (
+        <div className="fixed inset-0 z-50 bg-slate-800/50 flex items-center justify-center p-4 overflow-hidden">
+          <ModalDetail
+            handleCloseModal={handleCloseDetail}
+            todo={selectedToDo}
+          />
+        </div>
+      )}
     </>
   );
 };
