@@ -7,11 +7,10 @@ import {
   LoaderCircle,
 } from "lucide-react";
 import TabSummary from "./components/tabSummary";
-import useToDo from "@/src/lib/useToDo";
-import { useEffect, useEffectEvent } from "react";
+import { useToDoContext } from "@/src/context/ToDoContext";
 
 const Summary = () => {
-  const listToDo = useToDo();
+  const { listToDo } = useToDoContext();
   const notStarted = listToDo.filter((todo) => todo.status == "not");
   const progress = listToDo.filter((todo) => todo.status == "progress");
   const complete = listToDo.filter((todo) => todo.status == "completed");
