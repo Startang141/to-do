@@ -28,14 +28,12 @@ const ToDoList = () => {
       ? listToDo
       : listToDo.filter((todo) => todo.priority == status);
 
-  console.log("cek filter data", filteredToDo);
-
   const progressToDo = filteredToDo.filter(
-    (todo) => todo.status === "progress"
+    (todo) => todo.status === "progress",
   );
   const notToDo = filteredToDo.filter((todo) => todo.status === "not");
   const completToDo = filteredToDo.filter(
-    (todo) => todo.status === "completed"
+    (todo) => todo.status === "completed",
   );
 
   const [selectedToDo, setSelectedToDo] = useState<ToDoTypes | null>(null);

@@ -95,7 +95,7 @@ const ModalAdd: FC<ModalAddProps> = ({ handleCloseModal, handleAddToDo }) => {
               ></textarea>
             </div>
             <div className="flex flex-col">
-              <label htmlFor="date">Date</label>
+              <label htmlFor="date">Deadline Date</label>
               <input
                 required
                 name="date"

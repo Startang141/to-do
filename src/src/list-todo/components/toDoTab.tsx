@@ -26,6 +26,18 @@ const ToDoTab: FC<toDoProps> = ({
   handleDelete,
   handleOpenDetail,
 }) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const DeadlineDate = new Date(date);
+  DeadlineDate.setHours(0, 0, 0, 0);
+
+  const isDeadline =
+    DeadlineDate.getTime() > today.getTime()
+      ? "DueDate"
+      : DeadlineDate.getTime() === today.getTime()
+        ? "Today"
+        : "OnTrack";
+
   const handleCheckBoxChange = () => {
     const newStatus = status === "completed" ? "progress" : "completed";
     handleChangeStatus(id, newStatus);
@@ -51,21 +63,17 @@ const ToDoTab: FC<toDoProps> = ({
                   {title}
                 </h3>
                 <div>
-                  {priority === "low" && (
-                    <div className="bg-emerald-100 text-emerald-700 inline-block text-xs px-3 py-1 rounded-sm font-semibold">
-                      {priority}
-                    </div>
-                  )}
-                  {priority === "medium" && (
-                    <div className="bg-yellow-100 text-yellow-700 inline-block text-xs px-3 py-1 rounded-sm font-semibold">
-                      {priority}
-                    </div>
-                  )}
-                  {priority === "high" && (
-                    <div className="bg-red-100 text-red-700 inline-block text-xs px-3 py-1 rounded-sm font-semibold">
-                      {priority}
-                    </div>
-                  )}
+                  <div
+                    className={
+                      priority === "low"
+                        ? "bg-emerald-100 text-emerald-700 inline-block text-md px-3 rounded-sm font-semibold"
+                        : priority === "medium"
+                          ? "bg-yellow-100 text-yellow-700 inline-block text-md px-3 rounded-sm font-semibold"
+                          : "bg-red-100 text-red-700 inline-block text-md px-3 rounded-sm font-semibold"
+                    }
+                  >
+                    {priority}
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-2 text-slate-500">
@@ -76,9 +84,22 @@ const ToDoTab: FC<toDoProps> = ({
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-slate-500">
-            <Calendar className="" width={16} />
-            <p className="text-sm">{date}</p>
+          <div>
+            <div className="flex items-center gap-2 text-slate-500">
+              <Calendar width={16} />
+              <p className="text-sm">{date}</p>
+            </div>
+            <div
+              className={
+                isDeadline === "DueDate"
+                  ? "bg-red-100 text-red-700 text-center rounded-md font-semibold tracking-wider"
+                  : isDeadline === "Today"
+                    ? "bg-yellow-100 text-yellow-700 text-center rounded-md font-semibold tracking-wider"
+                    : "bg-green-100 text-green-700 text-center rounded-md font-semibold tracking-wider"
+              }
+            >
+              {isDeadline}
+            </div>
           </div>
           <div className="flex flex-row gap-1 items-center md:gap-8">
             <div className="flex gap-2 flex-row justify-end">
